@@ -1,6 +1,9 @@
-description "openconnect vpn client daemon"
+# openconnect vpn client daemon
 
-start on runlevel [2345]
+description "openconnect vpn client daemon"
+author      "Dan Carley"
+
+start on (filesystem and net-device-up IFACE!=lo)
 stop on runlevel [!2345]
 
 respawn
@@ -11,22 +14,34 @@ env DNS_UPDATE=no
 export DNS_UPDATE
 <% end -%>
 
-exec cat /etc/openconnect/network.passwd | openconnect \
-  <%= @url -%> \
-  --syslog \
-  --background \
+script
+  exec cat /etc/openconnect/network.passwd | openconnect \
+    <%= @url -%> \
+    --syslog \
+    --background \
 <% if @nodtls == true -%>
-  --no-dtls \
+    --no-dtls \
 <% end -%>
-  --script /etc/vpnc/vpnc-script \
+    --script /etc/vpnc/vpnc-script \
 <% if @nocertcheck == true -%>
-  --no-cert-check \
+    --no-cert-check \
 <% end -%>
 <% unless @cacerts.empty? -%>
-  --CAfile /etc/openconnect/network.cacerts \
+    --CAfile /etc/openconnect/network.cacerts \
 <% end -%>
 <% unless @servercert.empty? -%>
-  --servercert <%= @servercert -%> \
+    --servercert <%= @servercert -%> \
 <% end -%>
-  --user <%= @user -%> \
-  --passwd-on-stdin
+    --user <%= @user -%> \
+    --passwd-on-stdin
+end script
+
+post-start script
+  PID=`status openconnect | egrep -oi '([0-9]+)$' | head -n1`
+  echo $PID > /var/run/openconnect.pid
+end script
+
+post-stop script
+   rm -f /var/run/openconnect.pid
+end script
+
