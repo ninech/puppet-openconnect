@@ -17,6 +17,14 @@
 #   Boolean, whether to accept nameservers from the VPN endpoint.
 #   Default: true
 #
+# [*nocertcheck*]
+#   Boolean, whether to accept server SSL cert to be valid.
+#   Default: false
+#
+# [*nodtlsk*]
+#   Boolean, whether to disable DTLS or not
+#   Default: false
+#
 # [*cacerts*]
 #   PEM string of CAs to trust.
 #   Default: ''
@@ -30,6 +38,8 @@ class openconnect(
   $user,
   $pass,
   $dnsupdate = true,
+  $nocertcheck = false,
+  $nodtls = false,
   $cacerts = '',
   $servercert = ''
 ) inherits openconnect::params {

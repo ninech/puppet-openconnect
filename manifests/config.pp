@@ -3,15 +3,17 @@
 # This class is called from openconnect
 #
 class openconnect::config {
-  $url        = $::openconnect::url
-  $user       = $::openconnect::user
-  $pass       = $::openconnect::pass
-  $dnsupdate  = $::openconnect::dnsupdate
-  $cacerts    = $::openconnect::cacerts
-  $servercert = $::openconnect::servercert
+  $url         = $::openconnect::url
+  $user        = $::openconnect::user
+  $pass        = $::openconnect::pass
+  $dnsupdate   = $::openconnect::dnsupdate
+  $nocertcheck = $::openconnect::nocertcheck
+  $nodtls      = $::openconnect::nodtls
+  $cacerts     = $::openconnect::cacerts
+  $servercert  = $::openconnect::servercert
 
   validate_string($url, $user, $pass, $cacerts, $servercert)
-  validate_bool($dnsupdate)
+  validate_bool($dnsupdate, $nodtls, $nocertcheck)
 
   file { '/etc/openconnect':
     ensure => directory,
@@ -35,7 +37,7 @@ class openconnect::config {
 
   file { '/etc/init/openconnect.conf':
     ensure  => present,
-    mode    => '0600',
+    mode    => '0640',
     content => template('openconnect/etc/init/openconnect.conf.erb'),
   }
 }

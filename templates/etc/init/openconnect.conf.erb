@@ -14,8 +14,14 @@ export DNS_UPDATE
 exec cat /etc/openconnect/network.passwd | openconnect \
   <%= @url -%> \
   --syslog \
+  --background \
+<% if @nodtls == true -%>
   --no-dtls \
+<% end -%>
   --script /etc/vpnc/vpnc-script \
+<% if @nocertcheck == true -%>
+  --no-cert-check \
+<% end -%>
 <% unless @cacerts.empty? -%>
   --CAfile /etc/openconnect/network.cacerts \
 <% end -%>

@@ -1,3 +1,7 @@
+2016-xx-xx Unreleased
+- Add --no-cert-check option for test-systems with self signed certificates (@rplessl)
+- Add --no-dtls option for special systems (@rplessl)
+
 2014-04-08 Release 1.0.0
 - Log to syslog instead of STDOUT/STDERR to `/var/log/upstart/openconnect`.
 - Disable `hasrestart` so that argument changes get picked up.
